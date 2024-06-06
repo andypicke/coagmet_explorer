@@ -1,11 +1,14 @@
+#-------------------------------------------------------------------------
 #
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
+# coagmet_explorer
 #
-# Find out more about building applications with Shiny here:
+# A Shiny app to visualize data from the CoAgMet Weather station network in CO
 #
-#    https://shiny.posit.co/
+# Andy Pickering
+# andypicke@github.com
+# 2024/06/06
 #
+#-------------------------------------------------------------------------
 
 library(shiny)
 library(leaflet)
@@ -17,6 +20,7 @@ latest_data_coag <- rcoagmet::get_coagmet_data(station_id = "all", time_step = "
 data_merged <- latest_data_coag |> left_join(meta_coag, by = "station")
 
 
+# ** check that data is within last hour? **
 
 # --- this section of code to make title for map
 # From: https://stackoverflow.com/questions/49072510/r-add-title-to-leaflet-map
@@ -45,7 +49,7 @@ leaf_title <- function(var_to_plot){
 #-------------- Define function to make leaflet map of data
 
 map_data_leaflet <- function(var_to_plot){
-
+  
   dat_to_plot <- data_merged |>
     dplyr::select(c(name, network, longitude_deg_e, latitude_deg_n))
   
@@ -76,12 +80,12 @@ map_data_leaflet <- function(var_to_plot){
               pal = pal,
               title = var_to_plot)
   
- 
+  
   title <- leaf_title(var_to_plot)
   
   m <- addControl(map = m, title, position = "topleft", className = "map-title")
   
-   
+  
 }
 
 
@@ -97,12 +101,13 @@ ui <- fluidPage(
   
   
   tabsetPanel(
-    tabPanel("Air Temperature", leaflet::leafletOutput("temp_map", width = "100%")),
-    tabPanel("Relative Humidity", leaflet::leafletOutput("rh_map", width = "100%")),
+    tabPanel("Air Temperature",   leaflet::leafletOutput("temp_map", width = "100%")),
+    tabPanel("Relative Humidity", leaflet::leafletOutput("rh_map",   width = "100%")),
     tabPanel("Wind Speed", leaflet::leafletOutput("windspeed_map", width = "100%")),
     tabPanel("Solar Radiation", leaflet::leafletOutput("solarrad_map", width = "100%")),
-    tabPanel("About", h3("This Shiny App Displays ",),
-             a(href = "Ahttps://www.spc.noaa.gov/products/outlook/", "link"),
+    tabPanel("About", h3("This Shiny App Displays CoAgMet Weather Data",),
+             a(href = "https://coagmet.colostate.edu/", "CoAgMet"),
+             h5(a(href = "https://github.com/andypicke/rcoagmet", "rcoagmet")),
              h5("Disclaimer...")
     )
   ) # tabsetPanel
@@ -121,7 +126,7 @@ server <- function(input, output) {
   
   
   output$temp_map <- leaflet::renderLeaflet({
-        map_data_leaflet("air_temp")
+    map_data_leaflet("air_temp")
   })
   
   output$rh_map <- leaflet::renderLeaflet({
@@ -136,7 +141,7 @@ server <- function(input, output) {
     map_data_leaflet("solar_rad")
   })
   
-  }
+}
 
 
 #-------------------------------------------------------------------------
