@@ -16,14 +16,20 @@ library(rcoagmet)
 library(dplyr)
 library(DT)
 
-meta_coag <- rcoagmet::get_coagmet_meta(network = "coagmet")
-latest_data_coag <- rcoagmet::get_coagmet_data(station_id = "all", time_step = "latest")
-data_merged <- latest_data_coag |> left_join(meta_coag, by = "station")
+meta_coag <- rcoagmet::get_coagmet_meta(network = "coagmet") |> filter(active == "active")
+
+latest_data_coag <- rcoagmet::get_coagmet_data(station_id = "all", time_step = "latest") 
 
 
-# ** check that data is within last hour? **
+# check that data is within last 2 hours
+latest_time <- max(latest_data_coag$date_and_time)
+two_hours_ago <- latest_time - (2*3600)
+latest_data_coag <- latest_data_coag |> filter(date_and_time > two_hours_ago)
 
-# --- this section of code to make title for map
+data_merged <- meta_coag |> left_join(latest_data_coag, by = "station")
+
+
+# --- define a function to make title for leaflet map
 # From: https://stackoverflow.com/questions/49072510/r-add-title-to-leaflet-map
 leaf_title <- function(var_to_plot){
   tag.map.title <- htmltools::tags$style(htmltools::HTML("
@@ -47,12 +53,13 @@ leaf_title <- function(var_to_plot){
   
 }
 
+
 #-------------- Define function to make leaflet map of data
 
 map_data_leaflet <- function(var_to_plot){
   
   dat_to_plot <- data_merged |>
-    dplyr::select(c(name, network, longitude_deg_e, latitude_deg_n))
+    dplyr::select(c(name, network, date_and_time, longitude_deg_e, latitude_deg_n))
   
   dat_to_plot$plot_var <- pull(data_merged[, which(names(data_merged) == var_to_plot)])
   
@@ -69,13 +76,14 @@ map_data_leaflet <- function(var_to_plot){
     addTiles() |>
     addCircleMarkers(lng = ~longitude_deg_e, lat = ~latitude_deg_n, 
                      label = paste(dat_to_plot$name, ": ",dat_to_plot$plot_var),
-                     #             stroke = FALSE,
                      color = "grey",
                      weight = 1,
                      fillColor = ~pal(plot_var),
                      fillOpacity = 0.5,
                      popup = paste(dat_to_plot$name, "<br>",
-                                   "Network: ", dat_to_plot$network)
+                                   "Network: ", dat_to_plot$network, "<br>",
+                                   dat_to_plot$date_and_time
+                                   )
     ) |>
     addLegend(values = ~plot_var,
               pal = pal,
@@ -91,7 +99,7 @@ map_data_leaflet <- function(var_to_plot){
 
 
 #-------------------------------------------------------------------------
-# Define UI for application that draws a histogram
+# UI 
 #-------------------------------------------------------------------------
 ui <- fluidPage(
   
@@ -121,7 +129,7 @@ ui <- fluidPage(
 
 
 #-------------------------------------------------------------------------
-# Define server logic
+# SERVER
 #-------------------------------------------------------------------------
 
 server <- function(input, output) {
