@@ -14,6 +14,7 @@ library(shiny)
 library(leaflet)
 library(rcoagmet)
 library(dplyr)
+library(DT)
 
 meta_coag <- rcoagmet::get_coagmet_meta(network = "coagmet")
 latest_data_coag <- rcoagmet::get_coagmet_data(station_id = "all", time_step = "latest")
@@ -95,7 +96,7 @@ map_data_leaflet <- function(var_to_plot){
 ui <- fluidPage(
   
   # Application title
-  titlePanel("CoAgMet Weather Station Network"),
+  titlePanel("CoAgMet Weather Stations: Latest Data"),
   
   # Sidebar with a slider input for number of bins 
   
@@ -105,6 +106,7 @@ ui <- fluidPage(
     tabPanel("Relative Humidity", leaflet::leafletOutput("rh_map",   width = "100%")),
     tabPanel("Wind Speed", leaflet::leafletOutput("windspeed_map", width = "100%")),
     tabPanel("Solar Radiation", leaflet::leafletOutput("solarrad_map", width = "100%")),
+    tabPanel("Data Table", DTOutput("data_table")),
     tabPanel("About", h3("This Shiny App Displays CoAgMet Weather Data",),
              a(href = "https://coagmet.colostate.edu/", "CoAgMet"),
              h5(a(href = "https://github.com/andypicke/rcoagmet", "rcoagmet")),
@@ -140,6 +142,21 @@ server <- function(input, output) {
   output$solarrad_map <- leaflet::renderLeaflet({
     map_data_leaflet("solar_rad")
   })
+  
+  output$data_table <- renderDT(
+    {
+      data_merged |>
+        datatable(
+          rownames = FALSE,
+          extensions = c("Responsive", "Buttons"),
+          options = list(
+            buttons = c("excel", "csv", "pdf"),
+            dom = "Bftip"
+          )
+        )
+    },
+    server = FALSE
+  )
   
 }
 
