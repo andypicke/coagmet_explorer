@@ -12,21 +12,46 @@
 
 library(shiny)
 library(leaflet)
+#devtools::install_github("andypicke/rcoagmet")
 library(rcoagmet)
 library(dplyr)
 library(DT)
 
+# get station metadata for coag and nw networks
 meta_coag <- rcoagmet::get_coagmet_meta(network = "coagmet") |> filter(active == "active")
 
+meta_nw <- rcoagmet::get_coagmet_meta(network = "nw") |> filter(active == "active")
+
+# combine all station metatdata into single data frame
+meta_all <- rbind(meta_coag, meta_nw)
+
+# get latest data for coag and nw networks
 latest_data_coag <- rcoagmet::get_coagmet_data(station_id = "all", time_step = "latest") 
 
+latest_data_nw <- rcoagmet::get_coagmet_data(station_id = "all", time_step = "latest", network = "nw") 
 
-# check that data is within last 2 hours
-latest_time <- max(latest_data_coag$date_and_time)
+# select a subset of columns to keep
+cols_to_keep <- c('station', 'date_and_time', 'air_temp', 'rh', 'dewpoint', 'wind', 'solar_rad')
+
+latest_data_coag <- latest_data_coag |> 
+  select(cols_to_keep)
+
+latest_data_nw <- latest_data_nw |> 
+  dplyr::rename(air_temp = avg_temp) |> # air temp is named differently in nw network
+  select(cols_to_keep)
+
+# combine latest data into single data frame
+latest_data_all <- rbind(latest_data_coag, latest_data_nw) |>
+  filter(air_temp < 130) # one station had crazy temp (400deg?)
+
+
+# filter to data within last 2 hours
+latest_time <- max(latest_data_all$date_and_time)
 two_hours_ago <- latest_time - (2*3600)
-latest_data_coag <- latest_data_coag |> filter(date_and_time > two_hours_ago)
+latest_data_all <- latest_data_all |> filter(date_and_time > two_hours_ago)
 
-data_merged <- meta_coag |> left_join(latest_data_coag, by = "station")
+# merge the metadata and latest data
+data_merged <- meta_all |> left_join(latest_data_all, by = "station")
 
 
 # --- define a function to make title for leaflet map
@@ -110,10 +135,10 @@ ui <- fluidPage(
   
   
   tabsetPanel(
-    tabPanel("Air Temperature",   leaflet::leafletOutput("temp_map", width = "100%")),
-    tabPanel("Relative Humidity", leaflet::leafletOutput("rh_map",   width = "100%")),
-    tabPanel("Wind Speed", leaflet::leafletOutput("windspeed_map", width = "100%")),
-    tabPanel("Solar Radiation", leaflet::leafletOutput("solarrad_map", width = "100%")),
+    tabPanel("Air Temperature",   leaflet::leafletOutput("temp_map", width = "80%")),
+    tabPanel("Relative Humidity", leaflet::leafletOutput("rh_map",   width = "80%")),
+    tabPanel("Wind Speed", leaflet::leafletOutput("windspeed_map", width = "80%")),
+    tabPanel("Solar Radiation", leaflet::leafletOutput("solarrad_map", width = "80%")),
     tabPanel("Data Table", DTOutput("data_table")),
     tabPanel("About", h3("This Shiny App Displays CoAgMet Weather Data",),
              a(href = "https://coagmet.colostate.edu/", "CoAgMet"),
