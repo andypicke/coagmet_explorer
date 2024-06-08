@@ -959,18 +959,19 @@
       "RemoteRepo": "rcoagmet",
       "RemoteUsername": "andypicke",
       "RemoteRef": "HEAD",
-      "RemoteSha": "3749c0e0ab9dd44d1ea49076b271ceeb9a8c3d66",
+      "RemoteSha": "19eb5b9dede3866c4ef041ec860070e5ebaa06cc",
       "Requirements": [
         "dplyr",
         "geosphere",
         "glue",
+        "httr",
         "janitor",
         "lifecycle",
         "lubridate",
         "plotly",
         "readr"
       ],
-      "Hash": "946f91c5b4a8fde9293549429560e02a"
+      "Hash": "a71ce53043c4bba7b54aefab85e5c0d8"
     },
     "readr": {
       "Package": "readr",
