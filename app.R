@@ -87,7 +87,10 @@ map_data_leaflet <- function(var_to_plot, display_name = ""){
   dat_to_plot <- data_merged |>
     dplyr::select(c(name, network, date_and_time, longitude_deg_e, latitude_deg_n))
   
-  dat_to_plot$plot_var <- pull(data_merged[, which(names(data_merged) == var_to_plot)])
+  dat_to_plot$plot_var <- pull(data_merged[, which(names(data_merged) == var_to_plot)]) 
+  
+  dat_to_plot <- dat_to_plot |>
+    filter(!is.na(plot_var))
   
   if (var_to_plot == "rh") {
     dat_to_plot$plot_var <- dat_to_plot$plot_var * 100
