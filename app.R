@@ -12,6 +12,7 @@
 
 library(shiny)
 library(leaflet)
+library(leaflet.extras)
 #devtools::install_github("andypicke/rcoagmet")
 library(rcoagmet)
 library(dplyr)
@@ -81,7 +82,7 @@ leaf_title <- function(var_to_plot){
 
 #-------------- Define function to make leaflet map of data
 
-map_data_leaflet <- function(var_to_plot){
+map_data_leaflet <- function(var_to_plot, display_name = ""){
   
   dat_to_plot <- data_merged |>
     dplyr::select(c(name, network, date_and_time, longitude_deg_e, latitude_deg_n))
@@ -112,13 +113,13 @@ map_data_leaflet <- function(var_to_plot){
     ) |>
     addLegend(values = ~plot_var,
               pal = pal,
-              title = var_to_plot)
+              title = display_name) |>
+    addTerminator() |>
+    leaflet.extras::addResetMapButton()
   
   
-  title <- leaf_title(var_to_plot)
-  
-  m <- addControl(map = m, title, position = "topleft", className = "map-title")
-  
+  #title <- leaf_title(var_to_plot)
+  #m <- addControl(map = m, title, position = "topleft", className = "map-title")
   
 }
 
@@ -135,7 +136,7 @@ ui <- fluidPage(
   
   
   tabsetPanel(
-    tabPanel("Air Temperature",   leaflet::leafletOutput("temp_map", width = "80%")),
+    tabPanel("Air Temperature",   leaflet::leafletOutput("temp_map")),
     tabPanel("Relative Humidity", leaflet::leafletOutput("rh_map",   width = "80%")),
     tabPanel("Wind Speed", leaflet::leafletOutput("windspeed_map", width = "80%")),
     tabPanel("Solar Radiation", leaflet::leafletOutput("solarrad_map", width = "80%")),
@@ -161,19 +162,19 @@ server <- function(input, output) {
   
   
   output$temp_map <- leaflet::renderLeaflet({
-    map_data_leaflet("air_temp")
+    map_data_leaflet("air_temp", display_name = "Air Temperature")
   })
   
   output$rh_map <- leaflet::renderLeaflet({
-    map_data_leaflet("rh")
+    map_data_leaflet("rh", display_name = "Rel. Humidity")
   })
   
   output$windspeed_map <- leaflet::renderLeaflet({
-    map_data_leaflet("wind")
+    map_data_leaflet("wind", display_name = "Wind Speed")
   })
   
   output$solarrad_map <- leaflet::renderLeaflet({
-    map_data_leaflet("solar_rad")
+    map_data_leaflet("solar_rad", display_name = "Solar Radiation")
   })
   
   output$data_table <- renderDT(
