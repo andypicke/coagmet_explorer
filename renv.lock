@@ -670,6 +670,21 @@
       ],
       "Hash": "ca012d4a706e21ce217ba15f22d402b2"
     },
+    "leaflet.extras": {
+      "Package": "leaflet.extras",
+      "Version": "1.0.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "htmltools",
+        "htmlwidgets",
+        "leaflet",
+        "magrittr",
+        "stringr"
+      ],
+      "Hash": "8dbfc2c4d7ca2660971caf1153ca95c2"
+    },
     "leaflet.providers": {
       "Package": "leaflet.providers",
       "Version": "2.0.0",
