@@ -141,8 +141,8 @@ ui <- fluidPage(
   tabsetPanel(
     tabPanel("Air Temperature",   leaflet::leafletOutput("temp_map")),
     tabPanel("Relative Humidity", leaflet::leafletOutput("rh_map",   width = "80%")),
-    tabPanel("Wind Speed", leaflet::leafletOutput("windspeed_map", width = "80%")),
-    tabPanel("Solar Radiation", leaflet::leafletOutput("solarrad_map", width = "80%")),
+    tabPanel("Wind Speed",        leaflet::leafletOutput("windspeed_map", width = "80%")),
+    tabPanel("Solar Radiation",   leaflet::leafletOutput("solarrad_map", width = "80%")),
     tabPanel("Data Table", DTOutput("data_table")),
     tabPanel("About", h3("This Shiny App Displays CoAgMet Weather Data",),
              a(href = "https://coagmet.colostate.edu/", "CoAgMet"),
@@ -165,19 +165,19 @@ server <- function(input, output) {
   
   
   output$temp_map <- leaflet::renderLeaflet({
-    map_data_leaflet("air_temp", display_name = "Air Temperature")
+    map_data_leaflet("air_temp", display_name = "Air Temperature <br> [&#176; F]") # &#176; = degree symbol in html
   })
   
   output$rh_map <- leaflet::renderLeaflet({
-    map_data_leaflet("rh", display_name = "Rel. Humidity")
+    map_data_leaflet("rh", display_name = "Rel. Humidity <br> [%]")
   })
   
   output$windspeed_map <- leaflet::renderLeaflet({
-    map_data_leaflet("wind", display_name = "Wind Speed")
+    map_data_leaflet("wind", display_name = "Wind Speed <br> [mph]")
   })
   
   output$solarrad_map <- leaflet::renderLeaflet({
-    map_data_leaflet("solar_rad", display_name = "Solar Radiation")
+    map_data_leaflet("solar_rad", display_name = "Solar Radiation <br> [W/m<sup>2</sup>]")
   })
   
   output$data_table <- renderDT(
