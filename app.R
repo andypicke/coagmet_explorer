@@ -39,7 +39,7 @@ latest_data_coag <- latest_data_coag |>
 
 latest_data_nw <- latest_data_nw |> 
   dplyr::rename(air_temp = avg_temp) |> # air temp is named differently in nw network
-  select(cols_to_keep)
+  select(all_of(cols_to_keep))
 
 # combine latest data into single data frame
 latest_data_all <- rbind(latest_data_coag, latest_data_nw) |>
