@@ -35,7 +35,7 @@ latest_data_nw <- rcoagmet::get_coagmet_data(station_id = "all", time_step = "la
 cols_to_keep <- c('station', 'date_and_time', 'air_temp', 'rh', 'dewpoint', 'wind', 'solar_rad')
 
 latest_data_coag <- latest_data_coag |> 
-  select(cols_to_keep)
+  select(all_of(cols_to_keep))
 
 latest_data_nw <- latest_data_nw |> 
   dplyr::rename(air_temp = avg_temp) |> # air temp is named differently in nw network
@@ -104,15 +104,16 @@ map_data_leaflet <- function(var_to_plot, display_name = ""){
     leaflet() |>
     addTiles() |>
     addCircleMarkers(lng = ~longitude_deg_e, lat = ~latitude_deg_n, 
-                     label = paste(dat_to_plot$name, ": ",dat_to_plot$plot_var),
+                     #label = paste(dat_to_plot$name, ": ",dat_to_plot$plot_var),
                      color = "grey",
                      weight = 1,
                      fillColor = ~pal(plot_var),
                      fillOpacity = 0.5,
                      popup = paste(dat_to_plot$name, "<br>",
                                    "Network: ", dat_to_plot$network, "<br>",
-                                   dat_to_plot$date_and_time
-                                   )
+                                   dat_to_plot$date_and_time, "<br>",
+                                   var_to_plot, " : ", dat_to_plot$plot_var
+                     )
     ) |>
     addLegend(values = ~plot_var,
               pal = pal,
@@ -144,11 +145,20 @@ ui <- fluidPage(
     tabPanel("Wind Speed",        leaflet::leafletOutput("windspeed_map", width = "80%")),
     tabPanel("Solar Radiation",   leaflet::leafletOutput("solarrad_map", width = "80%")),
     tabPanel("Data Table", DTOutput("data_table")),
-    tabPanel("About", h3("This Shiny App Displays CoAgMet Weather Data",),
-             a(href = "https://coagmet.colostate.edu/", "CoAgMet"),
-             h5(a(href = "https://github.com/andypicke/rcoagmet", "rcoagmet")),
-             h5("Disclaimer...")
-    )
+    tabPanel("About", 
+             h3("A Shiny App to Display CoAgMet Weather Data",),
+             h5("Displays the latest data available during last 2 hours from the ",
+                a(href = "https://coagmet.colostate.edu/", "CoAgMet"), 
+                "weather station network"
+                ),
+             h5("Data is retrieved from the CoAgMet API using the ", 
+                a(href = "https://github.com/andypicke/rcoagmet", "rcoagmet"),
+                "package"
+                ),
+             h5("Source code for the app is availabe on ",
+                a(href = "https://github.com/andypicke/coagmet_explorer", "github")
+                )
+             )
   ) # tabsetPanel
   
   #  ) # sidebarLayout
