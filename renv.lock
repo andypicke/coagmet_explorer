@@ -311,14 +311,14 @@
     },
     "evaluate": {
       "Package": "evaluate",
-      "Version": "0.23",
+      "Version": "0.24.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "methods"
       ],
-      "Hash": "daf4a1246be12c1fa8c7705a0935c1a0"
+      "Hash": "a1066cbc05caee9a4bf6d90f194ff4da"
     },
     "fansi": {
       "Package": "fansi",
@@ -672,7 +672,7 @@
     },
     "leaflet.extras": {
       "Package": "leaflet.extras",
-      "Version": "1.0.0",
+      "Version": "2.0.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -683,7 +683,7 @@
         "magrittr",
         "stringr"
       ],
-      "Hash": "8dbfc2c4d7ca2660971caf1153ca95c2"
+      "Hash": "64f37f00964698635fe530b43e54ca98"
     },
     "leaflet.providers": {
       "Package": "leaflet.providers",
