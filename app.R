@@ -100,21 +100,24 @@ map_data_leaflet <- function(var_to_plot, display_name = ""){
     pal <- colorNumeric(palette = "YlOrRd", domain = dat_to_plot$plot_var)
   }
   
+  # make labels to show on hover
+  # see https://stackoverflow.com/questions/30964020/popup-when-hover-with-leaflet-in-r
+  labs <- as.list(paste(dat_to_plot$name, "<br>",
+                        "Network: ", dat_to_plot$network, "<br>",
+                        dat_to_plot$date_and_time, "<br>",
+                        var_to_plot, " : ", dat_to_plot$plot_var)
+  )
+  
   m <- dat_to_plot |>
     leaflet() |>
     addTiles() |>
     addCircleMarkers(lng = ~longitude_deg_e, lat = ~latitude_deg_n, 
-                     #label = paste(dat_to_plot$name, ": ",dat_to_plot$plot_var),
+                     label = lapply(labs,HTML),
                      color = "grey",
                      weight = 1,
                      fillColor = ~pal(plot_var),
-                     fillOpacity = 0.5,
-                     popup = paste(dat_to_plot$name, "<br>",
-                                   "Network: ", dat_to_plot$network, "<br>",
-                                   dat_to_plot$date_and_time, "<br>",
-                                   var_to_plot, " : ", dat_to_plot$plot_var
-                     )
-    ) |>
+                     fillOpacity = 0.5
+    )  |>
     addLegend(values = ~plot_var,
               pal = pal,
               title = display_name) |>
@@ -150,15 +153,15 @@ ui <- fluidPage(
              h5("Displays the latest data available during last 2 hours from the ",
                 a(href = "https://coagmet.colostate.edu/", "CoAgMet"), 
                 "weather station network"
-                ),
+             ),
              h5("Data is retrieved from the CoAgMet API using the ", 
                 a(href = "https://github.com/andypicke/rcoagmet", "rcoagmet"),
                 "package"
-                ),
+             ),
              h5("Source code for the app is availabe on ",
                 a(href = "https://github.com/andypicke/coagmet_explorer", "github")
-                )
              )
+    )
   ) # tabsetPanel
   
   #  ) # sidebarLayout
