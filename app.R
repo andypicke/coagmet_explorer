@@ -121,8 +121,11 @@ map_data_leaflet <- function(var_to_plot, display_name = ""){
     addLegend(values = ~plot_var,
               pal = pal,
               title = display_name) |>
-    addTerminator() |>
-    leaflet.extras::addResetMapButton()
+    addTerminator(group = "daylight") |> # add daylight shading curve to map
+    addLayersControl(overlayGroups = c("daylight"), # add toggle for daylight
+                     options = layersControlOptions(collapsed = FALSE)) |>
+    leaflet.extras::addResetMapButton() # add button to reset map to original position
+    
   
   
   #title <- leaf_title(var_to_plot)
