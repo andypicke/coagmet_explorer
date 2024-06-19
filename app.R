@@ -111,6 +111,7 @@ map_data_leaflet <- function(var_to_plot, display_name = ""){
   m <- dat_to_plot |>
     leaflet() |>
     addTiles() |>
+    fitBounds(lng1 = -109.06025, lat1 = 36.99243, lng2 = -102.04152, lat2 = 41.00344) |>
     addCircleMarkers(lng = ~longitude_deg_e, lat = ~latitude_deg_n, 
                      label = lapply(labs,HTML),
                      color = "grey",
@@ -147,9 +148,9 @@ ui <- fluidPage(
   
   tabsetPanel(
     tabPanel("Air Temperature",   leaflet::leafletOutput("temp_map")),
-    tabPanel("Relative Humidity", leaflet::leafletOutput("rh_map",   width = "80%")),
-    tabPanel("Wind Speed",        leaflet::leafletOutput("windspeed_map", width = "80%")),
-    tabPanel("Solar Radiation",   leaflet::leafletOutput("solarrad_map", width = "80%")),
+    tabPanel("Relative Humidity", leaflet::leafletOutput("rh_map")),
+    tabPanel("Wind Speed",        leaflet::leafletOutput("windspeed_map")),
+    tabPanel("Solar Radiation",   leaflet::leafletOutput("solarrad_map")),
     tabPanel("Data Table", DTOutput("data_table")),
     tabPanel("About", 
              h3("A Shiny App to Display CoAgMet Weather Data",),
