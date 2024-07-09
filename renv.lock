@@ -60,14 +60,14 @@
     },
     "PKI": {
       "Package": "PKI",
-      "Version": "0.1-12",
+      "Version": "0.1-14",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "base64enc"
       ],
-      "Hash": "999d7960fe5a5fd98267d0b68fd10065"
+      "Hash": "f5b9c6b2f62f1fa3dd53fd1ddccbb241"
     },
     "R6": {
       "Package": "R6",
@@ -584,7 +584,7 @@
     },
     "knitr": {
       "Package": "knitr",
-      "Version": "1.47",
+      "Version": "1.48",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -596,7 +596,7 @@
         "xfun",
         "yaml"
       ],
-      "Hash": "7c99b2d55584b982717fcc0950378612"
+      "Hash": "acf380f300c721da9fde7df115a5f86f"
     },
     "labeling": {
       "Package": "labeling",
@@ -1428,10 +1428,10 @@
     },
     "yaml": {
       "Package": "yaml",
-      "Version": "2.3.8",
+      "Version": "2.3.9",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "29240487a071f535f5e5d5a323b7afbd"
+      "Hash": "9cb28d11799d93c953f852083d55ee9e"
     }
   }
 }
