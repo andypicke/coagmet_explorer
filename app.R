@@ -43,41 +43,18 @@ latest_data_nw <- latest_data_nw |>
 
 # combine latest data into single data frame
 latest_data_all <- rbind(latest_data_coag, latest_data_nw) |>
-  filter(air_temp < 130) # one station had crazy temp (400deg?)
-
+  filter(air_temp < 130) |> # one station had crazy temp (400deg?)
+  filter(air_temp > -50)
 
 # filter to data within last 2 hours
-latest_time <- max(latest_data_all$date_and_time)
+#latest_time <- max(latest_data_all$date_and_time)
+latest_time <- lubridate::now(tzone = "MST")
 two_hours_ago <- latest_time - (2*3600)
 latest_data_all <- latest_data_all |> filter(date_and_time > two_hours_ago)
 
 # merge the metadata and latest data
 data_merged <- meta_all |> left_join(latest_data_all, by = "station")
 
-
-# --- define a function to make title for leaflet map
-# From: https://stackoverflow.com/questions/49072510/r-add-title-to-leaflet-map
-leaf_title <- function(var_to_plot){
-  tag.map.title <- htmltools::tags$style(htmltools::HTML("
-  .leaflet-control.map-title {
-    transform: translate(-50%,20%);
-    position: fixed !important;
-    left: 20%;
-    text-align: center;
-    padding-left: 10px;
-    padding-right: 10px;
-    background: rgba(255,255,255,0.75);
-    font-weight: bold;
-    font-size: 15px;
-  }
-"))
-  
-  title <- htmltools::tags$div(
-    tag.map.title, 
-    htmltools::HTML(paste("CoAgMet :  ",var_to_plot))
-  )
-  
-}
 
 
 
