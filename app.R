@@ -41,10 +41,11 @@ latest_data_nw <- latest_data_nw |>
   dplyr::rename(air_temp = avg_temp) |> # air temp is named differently in nw network
   select(all_of(cols_to_keep))
 
-# combine latest data into single data frame
+# combine latest data into single data frame, filter out some anomalous values
 latest_data_all <- rbind(latest_data_coag, latest_data_nw) |>
-  filter(air_temp < 130) |> # one station had crazy temp (400deg?)
-  filter(air_temp > -50)
+  filter(air_temp > -20, air_temp < 130) |> 
+  filter(rh > 0, rh < 100) |>
+  filter(solar_rad > 0)
 
 # filter to data within last 2 hours
 #latest_time <- max(latest_data_all$date_and_time)
@@ -124,6 +125,7 @@ server <- function(input, output) {
   output$data_table <- renderDT(
     {
       data_merged |>
+        select(station, name, location, date_and_time, air_temp, rh, solar_rad, wind) |>
         datatable(
           rownames = FALSE,
           extensions = c("Responsive", "Buttons"),
@@ -131,7 +133,8 @@ server <- function(input, output) {
             buttons = c("excel", "csv", "pdf"),
             dom = "Bftip"
           )
-        )
+        ) |>
+        DT::formatDate(columns = 4, method = "toString")
     },
     server = FALSE
   )
