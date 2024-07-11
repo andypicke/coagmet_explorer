@@ -4,7 +4,7 @@
 map_data_leaflet <- function(data_merged, var_to_plot, display_name = ""){
   
   dat_to_plot <- data_merged |>
-    dplyr::select(c(name, network, date_and_time, longitude_deg_e, latitude_deg_n))
+    dplyr::select(c(name, network, date_and_time, date_and_time_local, longitude_deg_e, latitude_deg_n))
   
   dat_to_plot$plot_var <- pull(data_merged[, which(names(data_merged) == var_to_plot)]) 
   
@@ -23,7 +23,7 @@ map_data_leaflet <- function(data_merged, var_to_plot, display_name = ""){
   # see https://stackoverflow.com/questions/30964020/popup-when-hover-with-leaflet-in-r
   labs <- as.list(paste(dat_to_plot$name, "<br>",
                         "Network: ", dat_to_plot$network, "<br>",
-                        dat_to_plot$date_and_time, "<br>",
+                        format(dat_to_plot$date_and_time_local, "%Y-%m-%d %H:%M:%S %Z"), "<br>",
                         var_to_plot, " : ", dat_to_plot$plot_var)
   )
   

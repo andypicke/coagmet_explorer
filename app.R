@@ -56,8 +56,8 @@ latest_data_all <- latest_data_all |> filter(date_and_time > two_hours_ago)
 # merge the metadata and latest data
 data_merged <- meta_all |> left_join(latest_data_all, by = "station")
 
-
-
+# add a column for datetime in local (Mountain) timezone (either MST or MDT depending on date..)
+data_merged$date_and_time_local <- lubridate::with_tz(data_merged$date_and_time, tz = "US/Mountain")
 
 
 #-------------------------------------------------------------------------
