@@ -66,11 +66,9 @@ data_merged$date_and_time_local <- lubridate::with_tz(data_merged$date_and_time,
 ui <- fluidPage(
   
   # Application title
-  titlePanel("CoAgMet Weather Stations: Latest Data"),
+  titlePanel(paste0("CoAgMet Weather Stations - Latest Data as of: ", format(lubridate::now(tzone = "US/Mountain"),"%Y-%m-%d %H:%M:%S %Z"))),
   
-  # Sidebar with a slider input for number of bins 
-  
-  
+  # tabs
   tabsetPanel(
     tabPanel("Air Temperature",   leaflet::leafletOutput("temp_map")),
     tabPanel("Relative Humidity", leaflet::leafletOutput("rh_map")),
