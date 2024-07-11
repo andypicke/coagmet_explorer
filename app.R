@@ -67,7 +67,7 @@ ui <- fluidPage(
   
   # Application title
   titlePanel(paste0("CoAgMet Weather Stations - Latest Data as of: ", format(lubridate::now(tzone = "US/Mountain"),"%Y-%m-%d %H:%M:%S %Z"))),
-  
+
   # tabs
   tabsetPanel(
     tabPanel("Air Temperature",   leaflet::leafletOutput("temp_map")),
