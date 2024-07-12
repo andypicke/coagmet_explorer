@@ -42,10 +42,14 @@ latest_data_nw <- latest_data_nw |>
   select(all_of(cols_to_keep))
 
 # combine latest data into single data frame, filter out some anomalous values
-latest_data_all <- rbind(latest_data_coag, latest_data_nw) |>
-  filter(air_temp > -20, air_temp < 130) |> 
-  filter(rh > 0, rh < 100) |>
-  filter(solar_rad > 0)
+latest_data_all <- rbind(latest_data_coag, latest_data_nw) 
+
+latest_data_all <- latest_data_all |> 
+  mutate(air_temp = if_else(air_temp > -30, air_temp, NA)) |>
+  mutate(air_temp = if_else(air_temp < 130, air_temp, NA)) |>
+  mutate(rh = if_else(rh >= 0, rh, NA)) |>
+  mutate(rh = if_else(rh <= 1, rh, NA))
+#  filter(solar_rad > 0)
 
 # filter to data within last 2 hours
 #latest_time <- max(latest_data_all$date_and_time)
