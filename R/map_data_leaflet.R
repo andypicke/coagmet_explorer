@@ -12,10 +12,14 @@ map_data_leaflet <- function(data_merged, var_to_plot, display_name = ""){
     filter(!is.na(plot_var))
   
   if (var_to_plot == "rh") {
+    # plot rel. humidity as percent (data is 0:1)
     dat_to_plot$plot_var <- dat_to_plot$plot_var * 100
-    #  pal <- colorNumeric(palette = "YlOrRd", domain = c(0, 100))
-    pal <- colorNumeric(palette = "YlOrRd", domain = dat_to_plot$plot_var)
-  } else {
+    # use blue color palette for relative humidity
+    pal <- colorNumeric(palette = "Blues", domain = dat_to_plot$plot_var)
+  } else if (var_to_plot == "wind"){
+    pal <- colorNumeric(palette = "PuBuGn", domain = dat_to_plot$plot_var)
+  } 
+  else {
     pal <- colorNumeric(palette = "YlOrRd", domain = dat_to_plot$plot_var)
   }
   
