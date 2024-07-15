@@ -11,6 +11,7 @@
 #-------------------------------------------------------------------------
 
 library(shiny)
+library(bslib)
 library(leaflet)
 library(leaflet.extras)
 #devtools::install_github("andypicke/rcoagmet")
@@ -64,42 +65,47 @@ data_merged <- meta_all |> left_join(latest_data_all, by = "station")
 data_merged$date_and_time_local <- lubridate::with_tz(data_merged$date_and_time, tz = "US/Mountain")
 
 
+
+
 #-------------------------------------------------------------------------
 # UI 
 #-------------------------------------------------------------------------
-ui <- fluidPage(
+
+ui <- page_fillable(
   
-  # Application title
-  titlePanel(paste0("CoAgMet Weather Stations - Latest Data as of: ", 
-                    format(lubridate::now(tzone = "US/Mountain"),"%Y-%m-%d %H:%M:%S %Z")),
-             windowTitle = "Latest CoAgMet Data"
-             ),
-  
-  # tabs
-  tabsetPanel(
-    tabPanel("Air Temperature",   leaflet::leafletOutput("temp_map")),
-    tabPanel("Relative Humidity", leaflet::leafletOutput("rh_map")),
-    tabPanel("Wind Speed",        leaflet::leafletOutput("windspeed_map")),
-    tabPanel("Solar Radiation",   leaflet::leafletOutput("solarrad_map")),
-    tabPanel("Data Table", DTOutput("data_table")),
-    tabPanel("About", 
-             h3("A Shiny App to Display CoAgMet Weather Data",),
-             h5("Displays the latest data available during last 2 hours from the ",
-                a(href = "https://coagmet.colostate.edu/", "CoAgMet"), 
-                "weather station network"
-             ),
-             h5("Data is retrieved from the CoAgMet API using the ", 
-                a(href = "https://github.com/andypicke/rcoagmet", "rcoagmet"),
-                "package"
-             ),
-             h5("Source code for the app is availabe on ",
-                a(href = "https://github.com/andypicke/coagmet_explorer", "github")
-             )
-    )
-  ) # tabsetPanel
-  
-  #  ) # sidebarLayout
-) # fluidPage
+  card(
+    card_header(paste0("CoAgMet Weather Stations - Latest Data as of: ", 
+                       format(lubridate::now(tzone = "US/Mountain"),"%Y-%m-%d %H:%M:%S %Z"))),
+    
+    # windowTitle = "Latest CoAgMet Data",
+    
+    navset_card_underline(
+      # title = "Tabs",
+      
+      # TAB: Leaflet map
+      nav_panel("Plot", leaflet::leafletOutput("temp_map")),
+      
+      # TAB: Data Table
+      nav_panel("Data Table", DTOutput("data_table")),
+      
+      # TAB: About
+      nav_panel("About", 
+                h3("A Shiny App to Display CoAgMet Weather Data",),
+                h5("Displays the latest data available within the last 2 hours from the ",
+                   a(href = "https://coagmet.colostate.edu/", "CoAgMet"),
+                   "weather station network"
+                ),
+                h5("Data is retrieved from the CoAgMet API using the ",
+                   a(href = "https://github.com/andypicke/rcoagmet", "rcoagmet"),
+                   "package"
+                ),
+                h5("Source code for the app is availabe on ",
+                   a(href = "https://github.com/andypicke/coagmet_explorer", "github")
+                )
+      ) #nav_panel
+    )#navset_card_underline
+  )#card
+)#page_fillable
 
 
 
@@ -115,17 +121,17 @@ server <- function(input, output) {
     map_data_leaflet(data_merged, "air_temp", display_name = "Air Temperature <br> [&#176; F]") # &#176; = degree symbol in html
   })
   
-  output$rh_map <- leaflet::renderLeaflet({
-    map_data_leaflet(data_merged, "rh", display_name = "Rel. Humidity <br> [%]")
-  })
-  
-  output$windspeed_map <- leaflet::renderLeaflet({
-    map_data_leaflet(data_merged, "wind", display_name = "Wind Speed <br> [mph]")
-  })
-  
-  output$solarrad_map <- leaflet::renderLeaflet({
-    map_data_leaflet(data_merged, "solar_rad", display_name = "Solar Radiation <br> [W/m<sup>2</sup>]")
-  })
+  # output$rh_map <- leaflet::renderLeaflet({
+  #   map_data_leaflet(data_merged, "rh", display_name = "Rel. Humidity <br> [%]")
+  # })
+  # 
+  # output$windspeed_map <- leaflet::renderLeaflet({
+  #   map_data_leaflet(data_merged, "wind", display_name = "Wind Speed <br> [mph]")
+  # })
+  # 
+  # output$solarrad_map <- leaflet::renderLeaflet({
+  #   map_data_leaflet(data_merged, "solar_rad", display_name = "Solar Radiation <br> [W/m<sup>2</sup>]")
+  # })
   
   output$data_table <- renderDT(
     {
