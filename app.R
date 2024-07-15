@@ -10,6 +10,11 @@
 #
 #-------------------------------------------------------------------------
 
+
+#---------------------------------
+# Load libraries
+#---------------------------------
+
 library(shiny)
 library(bslib)
 library(leaflet)
@@ -19,15 +24,20 @@ library(rcoagmet)
 library(dplyr)
 library(DT)
 
-# get station metadata for coag and nw networks
-meta_coag <- rcoagmet::get_coagmet_meta(network = "coagmet") |> filter(active == "active")
 
+
+#---------------------------------
+# Load weather data
+#---------------------------------
+
+# get station metadata for CoAgMet and NW networks
+meta_coag <- rcoagmet::get_coagmet_meta(network = "coagmet") |> filter(active == "active")
 meta_nw <- rcoagmet::get_coagmet_meta(network = "nw") |> filter(active == "active")
 
-# combine all station metatdata into single data frame
+# combine station metadata into single data frame
 meta_all <- rbind(meta_coag, meta_nw)
 
-# get latest data for coag and nw networks
+# get latest data for CoAgMet and NW networks
 latest_data_coag <- rcoagmet::get_coagmet_data(station_id = "all", time_step = "latest") 
 
 latest_data_nw <- rcoagmet::get_coagmet_data(station_id = "all", time_step = "latest", network = "nw") 
@@ -64,6 +74,8 @@ data_merged <- meta_all |> left_join(latest_data_all, by = "station")
 # add a column for datetime in local (Mountain) timezone (either MST or MDT depending on date..)
 data_merged$date_and_time_local <- lubridate::with_tz(data_merged$date_and_time, tz = "US/Mountain")
 
+#---------------------------------
+#---------------------------------
 
 
 
@@ -83,7 +95,16 @@ ui <- page_fillable(
       # title = "Tabs",
       
       # TAB: Leaflet map
-      nav_panel("Plot", leaflet::leafletOutput("temp_map")),
+      nav_panel("Temperature", leaflet::leafletOutput("temp_map")),
+      
+      # TAB: Leaflet map
+      nav_panel("Rel. Humidity", leaflet::leafletOutput("rh_map")),
+      
+      # TAB: Leaflet map
+      nav_panel("Wind Speed", leaflet::leafletOutput("windspeed_map")),
+      
+      # TAB: Leaflet map
+      nav_panel("Solar Radiation", leaflet::leafletOutput("solarrad_map")),
       
       # TAB: Data Table
       nav_panel("Data Table", DTOutput("data_table")),
@@ -121,17 +142,17 @@ server <- function(input, output) {
     map_data_leaflet(data_merged, "air_temp", display_name = "Air Temperature <br> [&#176; F]") # &#176; = degree symbol in html
   })
   
-  # output$rh_map <- leaflet::renderLeaflet({
-  #   map_data_leaflet(data_merged, "rh", display_name = "Rel. Humidity <br> [%]")
-  # })
-  # 
-  # output$windspeed_map <- leaflet::renderLeaflet({
-  #   map_data_leaflet(data_merged, "wind", display_name = "Wind Speed <br> [mph]")
-  # })
-  # 
-  # output$solarrad_map <- leaflet::renderLeaflet({
-  #   map_data_leaflet(data_merged, "solar_rad", display_name = "Solar Radiation <br> [W/m<sup>2</sup>]")
-  # })
+  output$rh_map <- leaflet::renderLeaflet({
+    map_data_leaflet(data_merged, "rh", display_name = "Rel. Humidity <br> [%]")
+  })
+
+  output$windspeed_map <- leaflet::renderLeaflet({
+    map_data_leaflet(data_merged, "wind", display_name = "Wind Speed <br> [mph]")
+  })
+
+  output$solarrad_map <- leaflet::renderLeaflet({
+    map_data_leaflet(data_merged, "solar_rad", display_name = "Solar Radiation <br> [W/m<sup>2</sup>]")
+  })
   
   output$data_table <- renderDT(
     {
