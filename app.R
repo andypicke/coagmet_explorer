@@ -43,7 +43,7 @@ latest_data_coag <- rcoagmet::get_coagmet_data(station_id = "all", time_step = "
 latest_data_nw <- rcoagmet::get_coagmet_data(station_id = "all", time_step = "latest", network = "nw") 
 
 # select a subset of columns to keep
-cols_to_keep <- c('station', 'date_and_time', 'air_temp', 'rh', 'dewpoint', 'wind', 'solar_rad')
+cols_to_keep <- c('station', 'date_and_time', 'air_temp', 'rh', 'dewpoint', 'wind', 'solar_rad', 'rso')
 
 latest_data_coag <- latest_data_coag |> 
   select(all_of(cols_to_keep))
@@ -59,8 +59,8 @@ latest_data_all <- latest_data_all |>
   mutate(air_temp = if_else(air_temp > -30, air_temp, NA)) |>
   mutate(air_temp = if_else(air_temp < 130, air_temp, NA)) |>
   mutate(rh = if_else(rh >= 0, rh, NA)) |>
-  mutate(rh = if_else(rh <= 1, rh, NA))
-#  filter(solar_rad > 0)
+  mutate(rh = if_else(rh <= 1, rh, NA)) |>
+  dplyr::mutate(perc_sun = round(100*solar_rad/rso,2)) # add percent solar radiation
 
 # filter to data within last 2 hours
 #latest_time <- max(latest_data_all$date_and_time)
@@ -105,6 +105,9 @@ ui <- page_fillable(
       
       # TAB: Leaflet map
       nav_panel("Solar Radiation", leaflet::leafletOutput("solarrad_map")),
+      
+      # TAB: Leaflet map
+      nav_panel("% Max Solar Radiation", leaflet::leafletOutput("perc_sun_map")),
       
       # TAB: Data Table
       nav_panel("Data Table", DTOutput("data_table")),
@@ -153,11 +156,15 @@ server <- function(input, output) {
   output$solarrad_map <- leaflet::renderLeaflet({
     map_data_leaflet(data_merged, "solar_rad", display_name = "Solar Radiation <br> [W/m<sup>2</sup>]")
   })
+
+  output$perc_sun_map <- leaflet::renderLeaflet({
+    map_data_leaflet(data_merged, "perc_sun", display_name = "% of Max Solar Radiation <br> [%]")
+  })
   
   output$data_table <- renderDT(
     {
       data_merged |>
-        select(station, name, location, date_and_time, air_temp, rh, solar_rad, wind) |>
+        select(station, name, location, date_and_time, air_temp, rh, solar_rad, perc_sun, wind) |>
         datatable(
           rownames = FALSE,
           extensions = c("Responsive", "Buttons"),
