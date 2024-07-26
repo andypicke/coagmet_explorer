@@ -974,7 +974,7 @@
       "RemoteRepo": "rcoagmet",
       "RemoteUsername": "andypicke",
       "RemoteRef": "HEAD",
-      "RemoteSha": "9ef4d87ca4704b625f2e3fa8236ea80240a7b156",
+      "RemoteSha": "655287eaf870752ddb4be736b895371b4e51c00a",
       "Requirements": [
         "dplyr",
         "geosphere",
@@ -986,7 +986,7 @@
         "plotly",
         "readr"
       ],
-      "Hash": "49a24f45f8c313a2c9b2533a0acdd4b1"
+      "Hash": "43c097336a434b41e430c5b50e8caf96"
     },
     "readr": {
       "Package": "readr",
