@@ -91,14 +91,14 @@
     },
     "Rcpp": {
       "Package": "Rcpp",
-      "Version": "1.0.12",
+      "Version": "1.0.13",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "CRAN",
       "Requirements": [
         "methods",
         "utils"
       ],
-      "Hash": "5ea2700d21e038ace58269ecdbeb9ec0"
+      "Hash": "f27411eb6d9c3dada5edd444b8416675"
     },
     "askpass": {
       "Package": "askpass",
@@ -974,7 +974,7 @@
       "RemoteRepo": "rcoagmet",
       "RemoteUsername": "andypicke",
       "RemoteRef": "HEAD",
-      "RemoteSha": "472b90dcdbc036bd3a79139ccaae0411c7788936",
+      "RemoteSha": "9ef4d87ca4704b625f2e3fa8236ea80240a7b156",
       "Requirements": [
         "dplyr",
         "geosphere",
@@ -986,7 +986,7 @@
         "plotly",
         "readr"
       ],
-      "Hash": "c494f3bbd84be363e537fa1c86f96b58"
+      "Hash": "49a24f45f8c313a2c9b2533a0acdd4b1"
     },
     "readr": {
       "Package": "readr",
@@ -1311,13 +1311,13 @@
     },
     "tinytex": {
       "Package": "tinytex",
-      "Version": "0.51",
+      "Version": "0.52",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "xfun"
       ],
-      "Hash": "d44e2fcd2e4e076f0aac540208559d1d"
+      "Hash": "cfbad971a71f0e27cec22e544a08bc3b"
     },
     "tzdb": {
       "Package": "tzdb",
@@ -1404,7 +1404,7 @@
     },
     "xfun": {
       "Package": "xfun",
-      "Version": "0.45",
+      "Version": "0.46",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1412,7 +1412,7 @@
         "stats",
         "tools"
       ],
-      "Hash": "ca59c87fe305b16a9141a5874c3a7889"
+      "Hash": "00ce32f398db0415dde61abfef11300c"
     },
     "xtable": {
       "Package": "xtable",
