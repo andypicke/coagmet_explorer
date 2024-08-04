@@ -60,7 +60,7 @@ latest_data_all <- latest_data_all |>
   mutate(air_temp = if_else(air_temp < 130, air_temp, NA)) |>
   mutate(rh = if_else(rh >= 0, rh, NA)) |>
   mutate(rh = if_else(rh <= 1, rh, NA)) |>
-  dplyr::mutate(perc_sun = round(100*solar_rad/rso,2)) # add percent solar radiation
+  dplyr::mutate(perc_clear = round(100*solar_rad/rso,2)) # add percent of clear-sky solar radiation 
 
 # filter to data within last 2 hours
 #latest_time <- max(latest_data_all$date_and_time)
@@ -107,7 +107,7 @@ ui <- page_fillable(
       nav_panel("Solar Radiation", leaflet::leafletOutput("solarrad_map")),
       
       # TAB: Leaflet map
-      nav_panel("% Max Solar Radiation", leaflet::leafletOutput("perc_sun_map")),
+      nav_panel("% Clear Sky Solar Radiation", leaflet::leafletOutput("perc_sun_map")),
       
       # TAB: Data Table
       nav_panel("Data Table", DTOutput("data_table")),
@@ -158,7 +158,7 @@ server <- function(input, output) {
   })
 
   output$perc_sun_map <- leaflet::renderLeaflet({
-    map_data_leaflet(data_merged, "perc_sun", display_name = "% of Max Solar Radiation <br> [%]")
+    map_data_leaflet(data_merged, "perc_clear", display_name = "% of Clear Sky  <br> Solar Radiation <br> [%]")
   })
   
   output$data_table <- renderDT(
