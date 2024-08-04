@@ -126,7 +126,8 @@ ui <- page_fillable(
                 h5("Source code for the app is availabe on ",
                    a(href = "https://github.com/andypicke/coagmet_explorer", "github")
                 )
-      ) #nav_panel
+      ), #nav_panel
+      full_screen = TRUE 
     )#navset_card_underline
   )#card
 )#page_fillable
