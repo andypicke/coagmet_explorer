@@ -84,7 +84,7 @@ data_merged$date_and_time_local <- lubridate::with_tz(data_merged$date_and_time,
 #-------------------------------------------------------------------------
 
 ui <- page_fillable(
-  
+  theme = bs_theme(bootswatch = "simplex"),
   card(
     card_header(paste0("CoAgMet Weather Stations - Latest Data as of: ", 
                        format(lubridate::now(tzone = "US/Mountain"),"%Y-%m-%d %H:%M:%S %Z"))),
@@ -165,7 +165,7 @@ server <- function(input, output) {
   output$data_table <- renderDT(
     {
       data_merged |>
-        select(station, name, location, date_and_time, air_temp, rh, solar_rad, perc_sun, wind) |>
+        select(station, name, location, date_and_time, air_temp, rh, solar_rad, perc_clear, wind) |>
         datatable(
           rownames = FALSE,
           extensions = c("Responsive", "Buttons"),
